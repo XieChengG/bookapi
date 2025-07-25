@@ -5,21 +5,27 @@ import (
 
 	"github.com/XieChengG/bookapi/config"
 	"github.com/XieChengG/bookapi/model"
+	"github.com/rs/zerolog"
 	"gorm.io/gorm"
 )
 
 type BookController struct {
-	db *gorm.DB
+	db  *gorm.DB
+	log *zerolog.Logger
 }
 
 func NewBookController() *BookController {
 	return &BookController{
-		db: config.GetConfig().MySQL.DB(),
+		db:  config.GetConfig().MySQL.DB(),
+		log: config.GetConfig().Log.Logger(),
 	}
 }
 
 // 创建书籍
 func (c *BookController) CreateBook(ctx context.Context, b *model.BookSpec) (*model.Book, error) {
+
+	c.log.Debug().Msgf("create book: %+v", b)
+
 	ins := &model.Book{
 		BookSpec: *b,
 	}

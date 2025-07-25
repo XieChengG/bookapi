@@ -1,5 +1,7 @@
 package model
 
+import "encoding/json"
+
 // Book's table structure
 type Book struct {
 	IsBn uint `json:"isbn" gorm:"primaryKey;column:isbn"`
@@ -15,4 +17,14 @@ type BookSpec struct {
 
 func (t *Book) TableName() string {
 	return "books"
+}
+
+func (b *Book) String() string {
+	v, _ := json.Marshal(b)
+	return string(v)
+}
+
+func (s *BookSpec) String() string {
+	v, _ := json.Marshal(s)
+	return string(v)
 }

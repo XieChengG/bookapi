@@ -41,7 +41,7 @@ func (h *BookApiHandler) CreateBook(ctx *gin.Context) {
 		return
 	}
 
-	book, err := h.svc.CreateBook(ctx, ins)
+	book, err := h.svc.CreateBook(ctx.Request.Context(), ins)
 	if err != nil {
 		response.Failed(ctx, err)
 	}

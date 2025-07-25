@@ -29,6 +29,7 @@ type MySQL struct {
 type Config struct {
 	App   *App   `json:"app"`
 	MySQL *MySQL `json:"mysql"`
+	Log   *Log   `json:"log"`
 }
 
 // stringger

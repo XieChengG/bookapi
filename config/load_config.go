@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/rs/zerolog"
 	"gopkg.in/yaml.v3"
 )
 
@@ -14,12 +15,25 @@ var conf = &Config{
 		Port: 8080,
 	},
 	MySQL: &MySQL{
-		Host:     "127.0.0.1",
+		Host:     "118.25.148.213",
 		Port:     3306,
-		Username: "root",
+		Username: "test",
 		Password: "123456",
 		Database: "test",
 		Debug:    true,
+	},
+	Log: &Log{
+		CallerDeep: 3,
+		Level:      zerolog.DebugLevel,
+		Console: Console{
+			Enable:  true,
+			NoColor: true,
+		},
+		File: File{
+			Enable:     true,
+			MaxSize:    100,
+			MaxBackups: 6,
+		},
 	},
 }
 
