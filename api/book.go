@@ -65,7 +65,7 @@ func (h *BookApiHandler) GetBook(ctx *gin.Context) {
 	idStr := ctx.Param("isbn")
 	id, _ := strconv.ParseInt(idStr, 10, 64)
 
-	book, err := h.svc.GetBook(ctx, id)
+	book, err := h.svc.GetBook(ctx.Request.Context(), &controller.GetBookRequest{Isbn: id})
 	if err != nil {
 		response.Failed(ctx, err)
 	}
@@ -83,7 +83,7 @@ func (h *BookApiHandler) UpdateBook(ctx *gin.Context) {
 		response.Failed(ctx, err)
 	}
 
-	err := h.svc.UpdateBook(ctx, id, &ins)
+	err := h.svc.UpdateBook(ctx, &controller.GetBookRequest{Isbn: id}, &ins)
 	if err != nil {
 		response.Failed(ctx, err)
 	}
@@ -92,9 +92,10 @@ func (h *BookApiHandler) UpdateBook(ctx *gin.Context) {
 // 删除书籍
 func (h *BookApiHandler) DeleteBook(ctx *gin.Context) {
 	var ins model.Book
-	id := ctx.Param("isbn")
+	idStr := ctx.Param("isbn")
+	id, _ := strconv.ParseInt(idStr, 10, 64)
 
-	err := h.svc.DeleteBook(ctx, id, &ins)
+	err := h.svc.DeleteBook(ctx, &controller.GetBookRequest{Isbn: id}, &ins)
 	if err != nil {
 		response.Failed(ctx, err)
 	}

@@ -22,3 +22,12 @@ func TestCreateBook(t *testing.T) {
 	}
 	t.Log(ins)
 }
+
+func TestGetBook(t *testing.T) {
+	book := controller.NewBookController()
+	ins, err := book.GetBook(context.Background(), &controller.GetBookRequest{Isbn: 6})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
+}

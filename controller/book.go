@@ -14,6 +14,10 @@ type BookController struct {
 	log *zerolog.Logger
 }
 
+type GetBookRequest struct {
+	Isbn int64 `json:"isbn"`
+}
+
 func NewBookController() *BookController {
 	return &BookController{
 		db:  config.GetConfig().MySQL.DB(),
@@ -44,17 +48,17 @@ func (c *BookController) GetBookList(ctx context.Context, b []*model.Book) ([]*m
 }
 
 // 获取单个书籍
-func (c *BookController) GetBook(ctx context.Context, id int64) (*model.Book, error) {
+func (c *BookController) GetBook(ctx context.Context, req *GetBookRequest) (*model.Book, error) {
 	ins := &model.Book{}
-	if err := c.db.Where("isbn = ?", id).Take(ins).Error; err != nil {
+	if err := c.db.WithContext(ctx).Where("isbn = ?", req.Isbn).Take(ins).Error; err != nil {
 		return nil, err
 	}
 	return ins, nil
 }
 
 // 更新书籍
-func (c *BookController) UpdateBook(ctx context.Context, id int64, b *model.BookSpec) error {
-	err := c.db.Where("isbn = ?", id).Model(&model.Book{}).Updates(b).Error
+func (c *BookController) UpdateBook(ctx context.Context, req *GetBookRequest, b *model.BookSpec) error {
+	err := c.db.Where("isbn = ?", req).Model(&model.Book{}).Updates(b).Error
 	if err != nil {
 		return err
 	}
@@ -62,8 +66,8 @@ func (c *BookController) UpdateBook(ctx context.Context, id int64, b *model.Book
 }
 
 // 删除书籍
-func (c *BookController) DeleteBook(ctx context.Context, id string, b *model.Book) error {
-	err := c.db.Where("isbn = ?", id).Delete(b).Error
+func (c *BookController) DeleteBook(ctx context.Context, req *GetBookRequest, b *model.Book) error {
+	err := c.db.Where("isbn = ?", req).Delete(b).Error
 	if err != nil {
 		return err
 	}
