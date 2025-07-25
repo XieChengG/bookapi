@@ -1,0 +1,1 @@
+{"level":"debug","time":"2025-07-25T15:58:32+08:00","caller":"bookapi/controller/book.go:32","message":"create book: {\"title\":\"Golang Course\",\"author\":\"jack\",\"price\":39.5,\"is_saled\":false}"}

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/XieChengG/bookapi/config"
+	"github.com/XieChengG/bookapi/exception"
 	"github.com/XieChengG/bookapi/model"
 	"github.com/rs/zerolog"
 	"gorm.io/gorm"
@@ -51,14 +52,16 @@ func (c *BookController) GetBookList(ctx context.Context, b []*model.Book) ([]*m
 func (c *BookController) GetBook(ctx context.Context, req *GetBookRequest) (*model.Book, error) {
 	ins := &model.Book{}
 	if err := c.db.WithContext(ctx).Where("isbn = ?", req.Isbn).Take(ins).Error; err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, exception.ErrNotFound("%d not found", req.Isbn)
+		}
 	}
 	return ins, nil
 }
 
 // 更新书籍
 func (c *BookController) UpdateBook(ctx context.Context, req *GetBookRequest, b *model.BookSpec) error {
-	err := c.db.Where("isbn = ?", req).Model(&model.Book{}).Updates(b).Error
+	err := c.db.Where("isbn = ?", req.Isbn).Model(&model.Book{}).Updates(b).Error
 	if err != nil {
 		return err
 	}
@@ -67,7 +70,7 @@ func (c *BookController) UpdateBook(ctx context.Context, req *GetBookRequest, b 
 
 // 删除书籍
 func (c *BookController) DeleteBook(ctx context.Context, req *GetBookRequest, b *model.Book) error {
-	err := c.db.Where("isbn = ?", req).Delete(b).Error
+	err := c.db.Where("isbn = ?", req.Isbn).Delete(b).Error
 	if err != nil {
 		return err
 	}

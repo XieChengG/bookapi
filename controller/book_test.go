@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/XieChengG/bookapi/controller"
+	"github.com/XieChengG/bookapi/exception"
 	"github.com/XieChengG/bookapi/model"
 )
 
@@ -25,9 +26,21 @@ func TestCreateBook(t *testing.T) {
 
 func TestGetBook(t *testing.T) {
 	book := controller.NewBookController()
-	ins, err := book.GetBook(context.Background(), &controller.GetBookRequest{Isbn: 6})
+	ins, err := book.GetBook(context.Background(), &controller.GetBookRequest{Isbn: 3})
+	if err != nil && exception.IsNotFound(err) {
+		t.Log("book is not found")
+	}
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Log(ins)
+}
+
+func TestDeleteBook(t *testing.T) {
+	book := controller.NewBookController()
+	ins := model.Book{}
+	err := book.DeleteBook(context.Background(), &controller.GetBookRequest{Isbn: 1}, &ins)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
